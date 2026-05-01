@@ -1,0 +1,20 @@
+# Next.js
+/frontend/node_modules
+/frontend/.next
+/frontend/out
+/frontend/build
+/frontend/.env*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+.env
+model_artifacts/
+
+# System
+.DS_Store
+Thumbs.db
