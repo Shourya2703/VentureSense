@@ -14,7 +14,14 @@ env/
 venv/
 .env
 model_artifacts/
+db_users.json
+fix_dashboard.py
+refactor_dashboard.py
+replace_colors.py
 
 # System
 .DS_Store
 Thumbs.db
+
+# Scratch
+scratch/

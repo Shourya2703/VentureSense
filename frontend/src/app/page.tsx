@@ -1,209 +1,237 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { ActivitySquare, ArrowRight, Sparkles, Box, Rocket, TrendingUp, BarChart3, BrainCircuit, ShieldCheck, Target } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AuthModal from "./components/AuthModal";
-
-function useScrollReveal() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add("opacity-100", "translate-y-0");
-          el.classList.remove("opacity-0", "translate-y-10");
-        }
-      },
-      { threshold: 0.15 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  return ref;
-}
-
-function ScrollSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const ref = useScrollReveal();
-  return (
-    <div ref={ref} className={`opacity-0 translate-y-10 transition-all duration-700 ease-out ${className}`}>
-      {children}
-    </div>
-  );
-}
+import { Sparkles, TrendingUp, ShieldCheck, Cpu, ArrowRight, Zap, Activity, PieChart, Globe } from "lucide-react";
 
 export default function LandingPage() {
+  const router = useRouter();
   const [authOpen, setAuthOpen] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [animKey, setAnimKey] = useState(0);
+
+  useEffect(() => {
+    setIsSignedIn(!!localStorage.getItem("vs_token"));
+  }, []);
+
+  const handleLogoClick = () => {
+    setAnimKey(prev => prev + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleStart = () => {
+    if (isSignedIn) {
+      router.push("/dashboard");
+    } else {
+      setAuthOpen(true);
+    }
+  };
+
   return (
-    <div className="min-h-screen font-sans selection:bg-emerald-500/30 flex flex-col relative overflow-hidden bg-black">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#064e3b] via-black to-black opacity-80" />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-500/20 blur-[120px] animate-[spin_30s_linear_infinite] mix-blend-screen" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-teal-400/15 blur-[120px] animate-[spin_25s_linear_infinite_reverse] mix-blend-screen" />
-        <div className="absolute top-[40%] left-[50%] w-[30%] h-[30%] rounded-full bg-green-500/10 blur-[100px] animate-float mix-blend-screen" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,black_60%,transparent_100%)]" />
+    <div className="min-h-screen bg-[#080808] text-white selection:bg-[#A78BFA] selection:text-[#080808]">
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+      
+
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle,rgba(167,139,250,0.15)_0%,rgba(139,92,246,0.05)_40%,transparent_70%)] opacity-80 blur-[120px]"></div>
+        
+
+        <svg className="absolute inset-0 w-[200%] h-full opacity-20 animate-drift-left" viewBox="0 0 200 100" preserveAspectRatio="none">
+          <path d="M-20,50 Q25,10 50,50 T110,40 T170,50 T220,45" fill="none" stroke="white" strokeWidth="0.05" />
+          <path d="M-20,80 Q30,30 80,60 T140,40 T200,70" fill="none" stroke="#A78BFA" strokeWidth="0.08" />
+          <path d="M-20,30 Q40,70 100,30 T180,60 T220,30" fill="none" stroke="white" strokeWidth="0.03" />
+        </svg>
+        <svg className="absolute inset-0 w-[200%] h-full opacity-10 animate-drift-right" viewBox="0 0 200 100" preserveAspectRatio="none">
+          <path d="M-20,60 Q50,20 100,60 T160,35 T220,55" fill="none" stroke="#A78BFA" strokeWidth="0.06" />
+          <path d="M-20,40 Q60,80 120,40 T200,70" fill="none" stroke="white" strokeWidth="0.04" />
+        </svg>
       </div>
 
-      {/* Navbar */}
-      <nav className="border-b border-emerald-500/40 shadow-[0_4px_30px_rgba(16,185,129,0.15)] bg-black/60 backdrop-blur-2xl sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="p-2 bg-black/50 rounded-xl border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.3)] group-hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all animate-glow-pulse">
-              <Sparkles className="w-6 h-6 text-emerald-400" />
-            </div>
-            <span className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">VentureSense</span>
-          </Link>
-          <div className="flex items-center gap-8">
-            <Link href="/dashboard" className="text-sm font-semibold text-slate-300 hover:text-emerald-400 transition-colors hidden md:block">Dashboard</Link>
-            <Link href="/dashboard/scenarios" className="text-sm font-semibold text-slate-300 hover:text-emerald-400 transition-colors hidden md:block">Scenarios</Link>
-            <Link href="/dashboard/methodology" className="text-sm font-semibold text-slate-300 hover:text-emerald-400 transition-colors hidden md:block">Methodology</Link>
-            <button onClick={() => setAuthOpen(true)} className="inline-flex h-10 items-center justify-center rounded-xl px-6 text-sm font-bold text-white gap-2 bg-black border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:border-emerald-400 transition-all">
-              Sign In <ArrowRight className="w-4 h-4 text-emerald-400" />
-            </button>
-          </div>
-        </div>
-      </nav>
 
-      {/* Hero: Text Left, Image Right */}
-      <section className="max-w-7xl mx-auto px-6 relative z-10 mt-20 md:mt-32 pb-20">
-        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-16">
-          {/* Left: Text */}
-          <div className="flex-1 text-left">
-            <div className="animate-fade-in-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/40 text-sm font-medium text-emerald-300 mb-8 shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-md">
-              <Sparkles className="w-4 h-4 text-emerald-400" /> AI-Powered Risk Engine v2.0
-            </div>
-            <h1 className="animate-fade-in-up-delay-1 text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 leading-[1.05]">
-              Predict business{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400">
-                failure before it happens.
-              </span>
-            </h1>
-            <p className="animate-fade-in-up-delay-2 text-lg md:text-xl text-slate-300 mb-10 max-w-xl leading-relaxed">
-              Harness ML &amp; Generative AI to stress-test financial scenarios and secure your startup&#39;s future.
-            </p>
-            <div className="animate-fade-in-up-delay-3 flex flex-col sm:flex-row items-start gap-4">
-              <button onClick={() => setAuthOpen(true)} className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-lg rounded-2xl hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:shadow-[0_0_50px_rgba(16,185,129,0.6)] flex items-center gap-3 border border-emerald-400/50">
-                Get Started <Rocket className="w-5 h-5" />
-              </button>
-              <Link href="/dashboard/scenarios" className="px-8 py-4 bg-slate-900/50 backdrop-blur-md border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.2)] text-white font-bold text-lg rounded-2xl hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all flex items-center gap-3">
-                <Box className="w-5 h-5 text-emerald-400" /> Scenarios
-              </Link>
-            </div>
-          </div>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#080808]/90 backdrop-blur-2xl border-b-2 border-[#A78BFA]/40 shadow-[0_4px_30px_rgba(167,139,250,0.1)]">
+        <div className="max-w-7xl mx-auto px-10 py-6 flex justify-between items-center">
+          <button onClick={handleLogoClick} className="flex items-center gap-4 group transition-transform active:scale-95">
+            <div className="relative">
+              <div className="absolute inset-0 bg-[#A78BFA]/20 blur-xl rounded-full"></div>
+              <svg className="w-10 h-10 relative z-10" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-          {/* Right: Hero Image */}
-          <div className="flex-1 animate-fade-in-up-delay-2 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.25)] animate-float">
-              <Image
-                src="/venture_hero_v2.png"
-                alt="VentureSense AI"
-                width={800}
-                height={800}
-                className="w-full h-auto object-cover scale-110 group-hover:scale-125 transition-transform duration-700"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                <path d="M10 12L20 28L30 12" stroke="#A78BFA" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M20 28V32" stroke="#A78BFA" strokeWidth="4" strokeLinecap="round" />
+                <circle cx="20" cy="28" r="3" fill="white" className="animate-pulse" />
+                <path d="M15 12L20 20L25 12" stroke="white" strokeWidth="2" strokeOpacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </div>
-            {/* Decorative floating badges */}
-            <div className="absolute -top-4 -right-4 bg-slate-900 border border-emerald-500/50 rounded-xl px-3 py-2 shadow-[0_0_20px_rgba(16,185,129,0.3)] animate-float-delayed hidden lg:flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-              <span className="text-xs font-bold text-emerald-300">Live Predictions</span>
-            </div>
-            <div className="absolute -bottom-4 -left-4 bg-slate-900 border border-emerald-500/50 rounded-xl px-3 py-2 shadow-[0_0_20px_rgba(16,185,129,0.3)] animate-float hidden lg:flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-bold text-emerald-300">92.8% Accurate</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Bar — Scroll Reveal */}
-      <section className="max-w-5xl mx-auto w-full px-6 mb-28 relative z-10">
-        <ScrollSection>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <span className="text-2xl font-black tracking-tighter text-white flex items-center">
+              VentureSense
+            </span>
+          </button>
+          <div className="hidden md:flex items-center gap-12">
             {[
-              { label: "Model Accuracy", value: "92.8%", icon: <Target className="w-4 h-4 text-emerald-400" /> },
-              { label: "ROC-AUC", value: "0.935", icon: <BarChart3 className="w-4 h-4 text-teal-400" /> },
-              { label: "Features", value: "10+", icon: <BrainCircuit className="w-4 h-4 text-green-400" /> },
-              { label: "AI Engine", value: "Gemini", icon: <Sparkles className="w-4 h-4 text-emerald-300" /> },
-            ].map((s, i) => (
-              <div key={i} className="bg-black/50 backdrop-blur-xl border border-emerald-500/30 rounded-2xl p-5 text-center hover:border-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all group">
-                <div className="flex justify-center mb-2">{s.icon}</div>
-                <div className="text-2xl font-black text-white mb-1 group-hover:text-emerald-400 transition-colors">{s.value}</div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</div>
-              </div>
+              { name: 'Predictor', href: '/dashboard' },
+              { name: 'Scenarios', href: '/dashboard/scenarios' }
+            ].map((link) => (
+              <Link key={link.name} href={link.href} className="text-[10px] font-black text-slate-400 hover:text-[#A78BFA] transition-all tracking-[0.3em] uppercase">
+                {link.name}
+              </Link>
             ))}
-          </div>
-        </ScrollSection>
-      </section>
-
-      {/* How It Works — Scroll Reveal */}
-      <section className="max-w-6xl mx-auto w-full px-6 mb-28 relative z-10">
-        <ScrollSection>
-          <h2 className="text-3xl md:text-4xl font-black text-left text-white mb-4">
-            How It <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Works</span>
-          </h2>
-          <p className="text-slate-400 text-left mb-12 max-w-xl">Three stages of intelligent financial risk analysis.</p>
-        </ScrollSection>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { icon: <TrendingUp className="w-7 h-7 text-emerald-400" />, step: "01", title: "Simulate", desc: "Adjust financial variables with interactive sliders and see the risk prediction update in real-time." },
-            { icon: <BarChart3 className="w-7 h-7 text-green-400" />, step: "02", title: "Explain", desc: "SHAP values decompose the model's decision, showing which features drive the risk score." },
-            { icon: <BrainCircuit className="w-7 h-7 text-teal-400" />, step: "03", title: "Strategize", desc: "Google Gemini AI transforms raw analytics into a personalized action plan." },
-          ].map((f, i) => (
-            <ScrollSection key={i}>
-              <div className="bg-black/40 backdrop-blur-xl border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.1)] p-8 rounded-3xl hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all duration-300 transform hover:-translate-y-2 group relative overflow-hidden h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="p-3 bg-black/80 rounded-2xl border border-emerald-500/50 group-hover:scale-110 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">{f.icon}</div>
-                    <span className="text-5xl font-black text-emerald-500/10 group-hover:text-emerald-500/20 transition-colors">{f.step}</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-3">{f.title}</h3>
-                  <p className="text-slate-400 leading-relaxed text-sm">{f.desc}</p>
-                </div>
-              </div>
-            </ScrollSection>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA Banner — Scroll Reveal */}
-      <section className="max-w-4xl mx-auto w-full px-6 mb-28 relative z-10">
-        <ScrollSection>
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-500 via-green-400 to-teal-500 p-[1px] shadow-[0_0_40px_rgba(16,185,129,0.4)]">
-            <div className="bg-black/80 backdrop-blur-xl rounded-[23px] p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-5">
-                <div className="p-4 bg-black rounded-2xl border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.5)] animate-float">
-                  <ShieldCheck className="w-8 h-8 text-emerald-400" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-1">Ready to protect your startup?</h3>
-                  <p className="text-emerald-100/70 text-sm">Jump in and run your first AI risk simulation.</p>
-                </div>
-              </div>
-              <button onClick={() => setAuthOpen(true)} className="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-bold px-8 py-3 rounded-xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center gap-2 shrink-0">
-                Sign Up Free <ArrowRight className="w-4 h-4" />
-              </button>
+              {isSignedIn ? (
+                <Link href="/dashboard" className="bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] text-white font-bold py-2.5 px-8 rounded-full transition-all hover:scale-105 active:scale-95 uppercase tracking-[0.2em] text-[10px]">
+                  Dashboard
+                </Link>
+              ) : (
+                <button onClick={() => setAuthOpen(true)} className="bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] text-white font-bold py-2.5 px-8 rounded-full transition-all hover:scale-105 active:scale-95 uppercase tracking-[0.2em] text-[10px]">
+                  Sign In
+                </button>
+              )}
             </div>
           </div>
-        </ScrollSection>
-      </section>
+        </nav>
+  
+        <main key={animKey} className="relative z-10 pt-40 pb-32">
 
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+          <section className="max-w-7xl mx-auto px-10 border-b border-white/5 pb-32">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-40 items-center">
+              <div className="animate-fade-in-up">
+                <h1 className="text-[5rem] md:text-[7rem] font-bold leading-[0.9] tracking-tighter mb-10 text-white">
+                  VentureSense <br />
+                  Is a Premier <br />
+                  Risk Engine <br />
+                  <span className="inline-flex items-center">
+                    Pr<div className="w-16 h-16 mx-1 border-2 border-[#A78BFA] rounded-full flex items-center justify-center p-2 shadow-[0_0_15px_rgba(167,139,250,0.4)]"><div className="w-full h-full border border-white/20 rounded-full flex items-center justify-center"><div className="w-3 h-3 bg-[#A78BFA] rounded-full shadow-[0_0_10px_#A78BFA]"></div></div></div>vider
+                  </span>
+                </h1>
+              </div>
+              
+              <div className="flex flex-col gap-10 animate-fade-in-up-delay-2 pl-20">
+                <div className="flex items-start gap-4">
+                  <p className="text-2xl text-slate-200 font-black leading-relaxed max-w-xl drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                    Renowned for powering the backbone of startup intelligence with our state-of-the-art SHAP-driven validation & AI directives.
+                  </p>
+                </div>
+                
+                <button onClick={handleStart} className="brand-button w-fit py-5 px-14 group">
+                  Get In Touch <ArrowRight className="inline-block ml-3 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+          </section>
+  
 
-      {/* Footer */}
-      <footer className="border-t border-emerald-500/30 shadow-[0_-4px_20px_rgba(16,185,129,0.1)] mt-auto relative z-10 bg-black/80 backdrop-blur-lg">
-        <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3 group cursor-pointer">
-            <Sparkles className="w-5 h-5 text-emerald-500 group-hover:text-emerald-400 transition-colors" />
-            <span className="font-bold text-emerald-500 group-hover:text-emerald-400 transition-colors">VentureSense</span>
+          <section className="max-w-7xl mx-auto px-10 mt-32 border-b border-white/5 pb-32">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="bg-[#0A0A0A] border-2 border-white/10 rounded-[3rem] p-16 flex flex-col justify-end min-h-[350px] relative overflow-hidden group hover:border-[#3B82F6]/50 transition-all shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                <div className="absolute top-8 left-8 w-2 h-2 bg-[#3B82F6] rounded-full shadow-[0_0_10px_#3B82F6]"></div>
+                <div className="text-8xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] mb-4">96k</div>
+                <div className="text-xs font-black text-slate-500 uppercase tracking-widest">Successful Predictions</div>
+              </div>
+            
+            <div className="bg-[#0A0A0A] border-2 border-white/10 rounded-[3rem] p-16 flex flex-col justify-end min-h-[350px] relative overflow-hidden group hover:border-[#3B82F6]/50 transition-all shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+              <div className="absolute top-8 left-8 w-2 h-2 bg-white/10 rounded-full"></div>
+              <div className="text-8xl font-black tracking-tighter text-white mb-4">1.2s</div>
+              <div className="text-xs font-black text-slate-500 uppercase tracking-widest">Inference Velocity</div>
+            </div>
+
+            <div className="bg-[#0A0A0A] border-2 border-white/10 rounded-[3rem] p-16 flex flex-col justify-end min-h-[350px] relative overflow-hidden group hover:border-[#A78BFA]/50 transition-all shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+              <div className="absolute top-8 left-8 w-2 h-2 bg-[#C4B5FD]/20 rounded-full"></div>
+              <div className="text-8xl font-black tracking-tighter text-[#C4B5FD] mb-4">₹4B</div>
+              <div className="text-xs font-black text-slate-500 uppercase tracking-widest">Capital Analyzed</div>
+            </div>
           </div>
-          <p className="text-sm font-medium text-slate-500">&copy; {new Date().getFullYear()} VentureSense AI.</p>
+        </section>
+
+
+        <section className="max-w-7xl mx-auto px-10 mt-32 mb-40">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
+            <div>
+              <h2 className="text-5xl font-bold tracking-tight mb-12 leading-tight">
+                Financial Infrastructure <br />
+                <span className="text-[#A78BFA]">Built For Intelligence.</span>
+              </h2>
+              <div className="space-y-12">
+                {[
+                  { title: "Risk Trace", desc: "Real-time probability variance based on recursive scenario testing." },
+                  { title: "SHAP Drivers", desc: "Identify exact financial levers causing risk with explainable AI." },
+                ].map((f, i) => (
+                  <div key={i} className="flex gap-8 group">
+                    <span className="text-[#A78BFA] font-black text-2xl mt-1">{"}"}</span>
+                    <div>
+                      <h3 className="text-xl font-bold mb-4 group-hover:text-[#A78BFA] transition-colors">{f.title}</h3>
+                      <p className="text-slate-500 font-medium leading-relaxed">{f.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-8">
+              <div className="bg-[#0A0A0A] border-2 border-white/10 rounded-[2.5rem] p-12 hover:border-[#A78BFA]/50 transition-all group shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                <div className="p-4 bg-[#111] border border-white/5 rounded-2xl text-[#A78BFA] w-fit mb-8 group-hover:bg-[#A78BFA] group-hover:text-[#0A0A0A] transition-all">
+                  <Zap className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold mb-3">Oracle Core</h3>
+                <p className="text-sm text-slate-500 font-medium leading-relaxed">Tailored strategic directives for growth.</p>
+              </div>
+              <div className="bg-[#0A0A0A] border-2 border-white/10 rounded-[2.5rem] p-12 mt-12 hover:border-[#A78BFA]/50 transition-all group shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                <div className="p-4 bg-[#111] border border-white/5 rounded-2xl text-[#A78BFA] w-fit mb-8 group-hover:bg-[#A78BFA] group-hover:text-[#0A0A0A] transition-all">
+                  <Cpu className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold mb-3">Neural Engine</h3>
+                <p className="text-sm text-slate-500 font-medium leading-relaxed">Deep pattern recognition in burn cycles.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+
+      <footer className="relative z-10 border-t-2 border-[#A78BFA]/40 shadow-[0_-4px_30px_rgba(167,139,250,0.1)] bg-[#080808]">
+        <div className="max-w-7xl mx-auto px-10 py-24">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-20">
+            <div className="space-y-8">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-[#A78BFA]/20 blur-md rounded-full"></div>
+                  <svg className="w-10 h-10 relative z-10" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 12L20 28L30 12" stroke="#A78BFA" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M20 28V32" stroke="#A78BFA" strokeWidth="4" strokeLinecap="round" />
+                    <circle cx="20" cy="28" r="3" fill="white" className="animate-pulse" />
+                  </svg>
+                </div>
+                <span className="text-2xl font-black tracking-tighter text-white">
+                  VentureSense
+                </span>
+              </div>
+              <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
+                The world's most advanced risk intelligence engine for elite venture builders and founders.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-20">
+              <div className="space-y-6">
+                <div className="text-[10px] font-black text-[#A78BFA] uppercase tracking-[0.3em]">Platform</div>
+                <div className="flex flex-col gap-4">
+                  <a href="#" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Oracle Engine</a>
+                  <a href="#" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Risk Trace</a>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div className="text-[10px] font-black text-[#A78BFA] uppercase tracking-[0.3em]">Company</div>
+                <div className="flex flex-col gap-4">
+                  <a href="#" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Privacy</a>
+                  <a href="#" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Terms</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+            <p className="text-[10px] font-black text-slate-700 uppercase tracking-[0.4em]">© 2026 VentureSense Intelligence. All rights reserved.</p>
+            <div className="flex gap-8">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></div>
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Systems Operational</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

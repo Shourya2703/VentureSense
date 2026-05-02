@@ -1,70 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --background: #080808;
+  --foreground: #FFFFFF;
+  --card: #0A0A0A;
+  --primary: #A78BFA;
+  --secondary: #8B5CF6;
+  --accent: #C4B5FD;
+  --border: rgba(167, 139, 250, 0.1);
 }
 
 body {
-  background-color: #020617; /* slate-950 */
-  color: #f8fafc;
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-@layer utilities {
-  .animate-fade-in-up {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0;
-  }
+.brand-gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-[#3B82F6] to-[#06B6D4];
+}
 
-  .animate-fade-in-up-delay-1 {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
-    opacity: 0;
-  }
+.brand-button {
+  @apply bg-[#0A0A0A] text-white border border-[#A78BFA]/30 font-bold py-4 px-10 rounded-full transition-all duration-300 hover:bg-[#111111] hover:border-[#A78BFA] hover:shadow-[0_0_30px_rgba(167,139,250,0.3)] hover:scale-105 active:scale-95 uppercase tracking-[0.2em] text-xs;
+}
 
-  .animate-fade-in-up-delay-2 {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
-    opacity: 0;
-  }
+.luxury-card {
+  @apply bg-[#0A0A0A] border border-white/20 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-all duration-500 hover:border-[#A78BFA]/50 hover:shadow-[0_0_40px_rgba(167,139,250,0.1)];
+}
 
-  .animate-fade-in-up-delay-3 {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
-    opacity: 0;
-  }
+.brand-border {
+  @apply border border-white/20 hover:border-[#A78BFA]/40 transition-colors duration-300;
+}
 
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
+.brand-glow {
+  @apply shadow-[0_0_40px_rgba(167,139,250,0.1)];
+}
 
-  .animate-float-delayed {
-    animation: float 6s ease-in-out 2s infinite;
-  }
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
 
-  .animate-glow-pulse {
-    animation: glowPulse 3s ease-in-out infinite;
-  }
+.animate-fade-in-up-delay-1 {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+  opacity: 0;
+}
 
-  .animate-slide-in-left {
-    animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0;
-  }
+.animate-fade-in-up-delay-2 {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  opacity: 0;
+}
 
-  .animate-slide-in-right {
-    animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-    opacity: 0;
-  }
+.animate-fade-in-up-delay-3 {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+  opacity: 0;
+}
 
-  .animate-scale-in {
-    animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0;
-  }
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
 
-  .glass-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
+.animate-float-delayed {
+  animation: float 6s ease-in-out 2s infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 @keyframes fadeInUp {
@@ -127,4 +152,36 @@ body {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+@keyframes driftLeft {
+  0% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes driftRight {
+  0% {
+    transform: translateX(-25%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
+.animate-drift-left {
+  animation: driftLeft 20s ease-in-out infinite;
+}
+
+.animate-drift-right {
+  animation: driftRight 25s ease-in-out infinite;
 }
