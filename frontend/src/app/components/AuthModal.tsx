@@ -16,7 +16,8 @@ export default function AuthModal({ open, onClose }: { open: boolean; onClose: (
   const close = () => { onClose(); setTimeout(reset, 300); };
 
   const api = async (url: string, body: any) => {
-    const r = await fetch(`http://127.0.0.1:8000${url}`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+    const r = await fetch(`${API_URL}${url}`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
     const d = await r.json(); if (!r.ok) throw new Error(d.detail||"Error"); return d;
   };
 

@@ -1,5 +1,6 @@
 fastapi
 uvicorn
+gunicorn
 xgboost
 scikit-learn
 pandas
@@ -9,3 +10,5 @@ shap
 pydantic
 google-genai
 resend
+PyJWT
+python-dotenv
