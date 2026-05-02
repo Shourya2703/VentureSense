@@ -2,7 +2,7 @@
 
 VentureSense is a production-grade, full-stack risk assessment platform designed for high-stakes venture capital environments. It combines **Extreme Gradient Boosting (XGBoost)** machine learning with a **Hybrid Financial Health Engine** and **Generative AI** to provide founders and investors with precise, actionable startup survival metrics.
 
-![VentureSense Preview](https://venture-sense-gh3t.vercel.app/og-image.png)
+
 
 ## 🚀 Live Environment
 - **Frontend**: [https://venture-sense-gh3t.vercel.app](https://venture-sense-gh3t.vercel.app)
