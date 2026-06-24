@@ -196,6 +196,8 @@ def predict(data: StartupData):
     efficiency_score = np.clip(efficiency, 0, 10.0)
     profit_flag = 1.0 if data.monthly_revenue > data.monthly_expenses else 0.0
     revenue_strength = np.log1p(data.monthly_revenue / 100000.0)
+    revenue_trend = 1.0 + data.customer_growth_rate
+    expense_trend = 1.0 + (data.debt_ratio_percent / 100.0)
 
     burn_to_funding_ratio = burn_rate / (data.funding_amount + 1.0)
     growth_efficiency = data.customer_growth_rate * efficiency_score
@@ -242,6 +244,12 @@ def predict(data: StartupData):
     cash_score = 1.0 - min(1.0, data.cash_to_total_assets / 0.4)
     cash_score = max(0.0, cash_score)
     
+    runway_score = max(0.0, 1.0 - (runway_months / 36.0))
+    growth_score = max(0.0, 1.0 - (data.customer_growth_rate / 0.5)) if data.customer_growth_rate >= 0 else 1.0
+    churn_score = min(1.0, data.churn_rate / 0.4)
+    funding_score = max(0.0, 1.0 - (data.funding_amount / 10000000.0))
+    debt_score = min(1.0, data.debt_ratio_percent / 100.0)
+    
     financial_risk = (
         0.25 * burn_eff +
         0.20 * runway_score +
@@ -257,6 +265,7 @@ def predict(data: StartupData):
     prob = max(0.03, min(0.97, prob))
     
     risk_level = get_risk_level(prob)
+    confidence = round(float(0.85 + abs(prob - 0.5) * 0.25), 4)
     
     top_features = []
     if feature_importance:
