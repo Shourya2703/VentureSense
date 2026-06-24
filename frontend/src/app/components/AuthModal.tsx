@@ -23,11 +23,29 @@ export default function AuthModal({ open, onClose }: { open: boolean; onClose: (
 
   const onSignup = async (e: React.FormEvent) => {
     e.preventDefault(); setLoading(true); setError("");
-    try { await api("/auth/signup", { name:form.name, surname:form.surname, email:form.email, password:form.password }); await api("/auth/send-otp", { email:form.email }); setMode("otp"); setSuccess("OTP sent to your email!"); } catch(e:any){ setError(e.message); } finally { setLoading(false); }
+    try { 
+      await api("/auth/signup", { name:form.name, surname:form.surname, email:form.email, password:form.password }); 
+      const res = await api("/auth/send-otp", { email:form.email }); 
+      setMode("otp"); 
+      if (res.otp) {
+        setSuccess(`Using unverified email. Code: ${res.otp}`);
+      } else {
+        setSuccess("OTP sent to your email!");
+      }
+    } catch(e:any){ setError(e.message); } finally { setLoading(false); }
   };
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault(); setLoading(true); setError("");
-    try { await api("/auth/login", { email:form.email }); await api("/auth/send-otp", { email:form.email }); setMode("otp"); setSuccess("OTP sent to your email!"); } catch(e:any){ setError(e.message); } finally { setLoading(false); }
+    try { 
+      await api("/auth/login", { email:form.email }); 
+      const res = await api("/auth/send-otp", { email:form.email }); 
+      setMode("otp"); 
+      if (res.otp) {
+        setSuccess(`Using unverified email. Code: ${res.otp}`);
+      } else {
+        setSuccess("OTP sent to your email!");
+      }
+    } catch(e:any){ setError(e.message); } finally { setLoading(false); }
   };
   const onVerify = async (e: React.FormEvent) => {
     e.preventDefault(); setLoading(true); setError("");

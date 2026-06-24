@@ -383,7 +383,10 @@ def send_otp(req: SendOTPRequest):
         return {"message": "OTP sent successfully to your email"}
     except Exception as e:
         print(f"Resend email failed: {e}")
-        return {"message": "OTP generated (email delivery may have failed). Check backend logs."}
+        return {
+            "message": "OTP generated (email delivery failed). Check backend logs or use the code below.",
+            "otp": otp_code
+        }
 
 @app.post("/auth/verify-otp")
 def verify_otp(req: VerifyOTPRequest):
